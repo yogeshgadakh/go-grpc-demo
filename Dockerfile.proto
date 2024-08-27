@@ -1,0 +1,23 @@
+
+# Define build-time arguments with default values
+ARG BUILDER_IMAGE_NAME=golang:1.21.7-alpine3.19
+ARG PROJECT_NAME="grpc-demo"
+
+# Use the build-time argument in the FROM instruction
+FROM ${BUILDER_IMAGE_NAME} as builder
+
+# Set environment variables
+ENV GOPROXY="https://proxy.golang.org,direct"
+
+# Install necessary packages
+RUN apk update \
+    && apk add --no-cache protobuf \
+    && go install google.golang.org/protobuf/cmd/protoc-gen-go@latest \
+    && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
+
+# Set working directory
+WORKDIR /opt
+
+# Add a label
+LABEL project-name=${PROJECT_NAME}

@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package protos.train_ticket;
+option go_package = "../protos";
+
+
+// Message for user details
+message User {
+    string first_name = 1;
+    string last_name = 2;
+    string email = 3;
+}
+
+// Message for ticket purchase request
+message PurchaseRequest {
+    string from = 1;
+    string to = 2;
+    User user = 3;
+    double price_paid = 4;
+    string section = 5;  // Section A or B //can modify as Enum
+}
+
+// Message for ticket purchase response
+message PurchaseResponse {
+    string receipt_id = 1;
+    string from = 2;
+    string to = 3;
+    User user = 4;
+    double price_paid = 5;
+    string section = 6;
+    string seat_number = 7;
+}
+
+// Message for seat modification
+message ModifySeatRequest {
+    string receipt_id = 1;
+    string new_seat_number = 2;
+}
+
+// Message for seat modification response
+message ModifySeatResponse {
+    bool success = 1;
+}
+
+// Message for getting user details by section
+message UsersInSectionRequest {
+    string section = 1;
+}
+
+// Message for user details response
+message UserDetails {
+    string user_id = 1;
+    string seat_number = 2;
+    User user = 3;
+}
+
+// Response for getting users by section
+message UsersInSectionResponse {
+    repeated UserDetails users = 1;
+}
+
+// Message for removing a user
+message RemoveUserRequest {
+    string user_id = 1;
+}
+
+// Response for removing a user
+message RemoveUserResponse {
+    bool success = 1;
+}
+
+// Define the train ticket service
+service TrainTicketService {
+    rpc PurchaseTicket (PurchaseRequest) returns (PurchaseResponse);
+    rpc GetReceipt (PurchaseRequest) returns (PurchaseResponse);
+    rpc GetUsersInSection (UsersInSectionRequest) returns (UsersInSectionResponse);
+    rpc RemoveUser (RemoveUserRequest) returns (RemoveUserResponse);
+    rpc ModifySeat (ModifySeatRequest) returns (ModifySeatResponse);
+}
